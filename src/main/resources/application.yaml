@@ -1,6 +1,12 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: rag-assistant
+  web:
+    resources:
+      static-locations: classpath:/static/
   ai:
     vectorstore:
       pgvector:

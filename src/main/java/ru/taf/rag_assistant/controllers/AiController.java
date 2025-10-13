@@ -27,7 +27,7 @@ public class AiController {
         this.vectorStore = vectorStore;
     }
 
-    @GetMapping("ask-stream")
+    @GetMapping("answer")
     public Flux<String> askStream(@RequestParam String question) {
         var qaAdvisor = QuestionAnswerAdvisor.builder(vectorStore)
                 .searchRequest(SearchRequest.builder()
