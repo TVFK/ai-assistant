@@ -1,12 +1,15 @@
 server:
+  address: 0.0.0.0
   port: 8080
 
 spring:
   application:
     name: rag-assistant
-  web:
-    resources:
-      static-locations: classpath:/static/
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/rag_db}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
   ai:
     vectorstore:
       pgvector:
@@ -15,11 +18,6 @@ spring:
     ollama:
       embedding:
         model: nomic-embed-text
-      base-url: http://localhost:11434
+      base-url: ${SPRING_AI_OLLAMA_BASE_URL:http://localhost:11434}
       chat:
         model: gemma3
-  datasource:
-    url: jdbc:postgresql://localhost:5432/rag_db
-    username: postgres
-    password: password
-    driver-class-name: org.postgresql.Driver
