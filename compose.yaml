@@ -42,8 +42,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      ollama:
-        condition: service_healthy
     networks:
       - rag-network
 
