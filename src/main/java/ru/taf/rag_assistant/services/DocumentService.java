@@ -24,19 +24,15 @@ public class DocumentService implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        System.out.println("=== Starting document loading process ===");
+
         try {
-            // Используем ResourcePatternResolver для поиска ресурсов
             Resource[] resources = resourcePatternResolver.getResources("classpath*:/files/*.pdf");
-
-            if (resources.length == 0) {
-                System.out.println("No PDF files found in classpath:/files/");
-                return;
-            }
-
             System.out.println("Found " + resources.length + " PDF files to process");
 
             for (Resource resource : resources) {
                 String fileName = resource.getFilename();
+                System.out.println("Processing file: " + fileName);
 
                 if (vectorStoreRepository.containsDocument(fileName)) {
                     System.out.println("Document " + fileName + " already in db");
@@ -44,23 +40,30 @@ public class DocumentService implements CommandLineRunner {
                 }
 
                 try {
+                    System.out.println("Reading document: " + fileName);
                     TikaDocumentReader reader = new TikaDocumentReader(resource);
                     TextSplitter textSplitter = new TokenTextSplitter(500, 200, 5, 1000, true);
                     List<Document> documents = textSplitter.apply(reader.get());
+
+                    System.out.println("Created " + documents.size() + " chunks for document: " + fileName);
 
                     documents.forEach(doc ->
                             doc.getMetadata().put("file_name", fileName)
                     );
 
+                    System.out.println("Starting vector store upload for " + documents.size() + " chunks...");
                     vectorStore.accept(documents);
-                    System.out.println("Document " + fileName + " loaded successfully");
+                    System.out.println("✓ Document " + fileName + " loaded successfully with " + documents.size() + " chunks");
+
                 } catch (Exception e) {
-                    System.err.println("Error loading document " + fileName + ": " + e.getMessage());
+                    System.err.println("✗ Error loading document " + fileName + ": " + e.getMessage());
                     e.printStackTrace();
                 }
             }
+            System.out.println("=== Document loading process completed ===");
+
         } catch (Exception e) {
-            System.err.println("Error accessing PDF resources: " + e.getMessage());
+            System.err.println("✗ Error in document loading process: " + e.getMessage());
             e.printStackTrace();
         }
     }
