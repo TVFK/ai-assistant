@@ -15,7 +15,7 @@ import reactor.core.publisher.Flux;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api/v1")
 public class AiController {
 
     private final ChatModel chatModel;

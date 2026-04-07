@@ -143,7 +143,7 @@
         streamingMessage.innerHTML = '<span class="loading">ИИ думает...</span>';
 
         try {
-            const response = await fetch(`/answer?question=${encodeURIComponent(question)}`);
+            const response = await fetch(`api/v1/answer?question=${encodeURIComponent(question)}`);
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
 

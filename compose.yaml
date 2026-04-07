@@ -1,6 +1,7 @@
 name: rag-assistant
 
 services:
+  # Infra
   postgres:
     image: pgvector/pgvector:pg16
     environment:
@@ -28,7 +29,20 @@ services:
     networks:
       - rag-network
 
-  rag-assistant-service:
+  nginx:
+    container_name: nginx
+    build:
+      context: ./config/nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    networks:
+      - rag-network
+    depends_on:
+      - rag-service
+
+  # Service
+  rag-service:
     build:
       context: .
       dockerfile: Dockerfile
