@@ -21,3 +21,11 @@ spring:
       base-url: ${SPRING_AI_OLLAMA_BASE_URL:http://localhost:11434}
       chat:
         model: gemma3
+  security:
+    user:
+      name: ""
+
+app:
+  jwt:
+    secret: "e9871ce4-8ec5-49d9-9901-00aa88908959"
+    expiration-ms: 3600000
