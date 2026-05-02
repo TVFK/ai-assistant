@@ -21,11 +21,17 @@ spring:
       base-url: ${SPRING_AI_OLLAMA_BASE_URL:http://localhost:11434}
       chat:
         model: gemma3
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   security:
     user:
       name: ""
 
 app:
   jwt:
-    secret: "e9871ce4-8ec5-49d9-9901-00aa88908959"
+    secret: "mW3gQ1rZ8kLvNpXsYdHoT2uEjCbAf6iRwMnKqP0eZ7s"
     expiration-ms: 3600000

@@ -2,9 +2,11 @@ package ru.taf.rag_assistant.controllers;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +28,15 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest req) {
-        authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(req.username(), req.password())
-        );
+        try {
+            authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(req.username(), req.password())
+            );
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new AuthResponse(null, "Bad credentials"));
+        }
+
         User user = userRepo.findByUsername(req.username()).orElseThrow();
         String token = jwtService.generate(user);
         return ResponseEntity.ok(new AuthResponse(token, user.getRole().name()));

@@ -15,7 +15,7 @@ import reactor.core.publisher.Flux;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api")
 public class AiController {
 
     private final ChatModel chatModel;
@@ -39,6 +39,7 @@ public class AiController {
         return ChatClient.builder(chatModel)
                 .build()
                 .prompt()
+                .system(s -> s.text("Отвечай только на русском языке."))
                 .advisors(qaAdvisor)
                 .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, conversationId))
                 .user(question)
