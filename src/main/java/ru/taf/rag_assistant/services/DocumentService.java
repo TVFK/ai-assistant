@@ -10,8 +10,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import ru.taf.rag_assistant.repositories.VectorStoreRepository;
 
 import java.util.List;
@@ -51,5 +53,17 @@ public class DocumentService {
             System.err.println("✗ Error loading document " + fileName + ": " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    public List<String> getAllDocumentNames() {
+        return vectorStoreRepository.findDistinctFileNames();
+    }
+
+    public void deleteDocument(String fileName) {
+        if (!vectorStoreRepository.containsDocument(fileName)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Document not found: " + fileName);
+        }
+        vectorStoreRepository.deleteByFileName(fileName);
+        System.out.println("✓ Document " + fileName + " deleted");
     }
 }
